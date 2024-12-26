@@ -1,0 +1,17 @@
+FILE: src/components/CategoryFilters.jsx
+
+ - [Line 8] Magic Numbers (Severity: Medium)
+   Defect: Magic number '10' found. Consider replacing it with a named constant.
+   Solution: Replace magic numbers with named constants for better clarity.
+
+ - [Line 9] Magic Numbers (Severity: Medium)
+   Defect: Magic number '101' found. Consider replacing it with a named constant.
+   Solution: Replace magic numbers with named constants for better clarity.
+
+ - [Line 8] Magic Numbers (Severity: Medium)
+   Defect: Magic number '10' found. Consider replacing it with a named constant.
+   Solution: Replace magic numbers with named constants for better clarity.
+
+ - [Line 9] Magic Numbers (Severity: Medium)
+   Defect: Magic number '101' found. Consider replacing it with a named constant.
+   Solution: Replace magic numbers with named constants for better clarity.

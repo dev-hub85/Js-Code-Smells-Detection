@@ -1,0 +1,139 @@
+FILE: src/App.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/BuyNow.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Carousel.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Cart.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/CategoryFilters.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Contact.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Footer.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Header.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/HeroSection.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Home.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Navbar.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/OrderForm.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/ProductDetails.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Products.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/ShowItem.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/Testimonial.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/callback.jsx
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/components/products-info.js
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: src/index.js
+ - [Line 1] Unused Dependency (Severity: Medium)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.
+
+FILE: undefined
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "@material-tailwind/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "@testing-library/jest-dom" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "@testing-library/react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "@testing-library/user-event" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "react" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "react-dom" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "react-redux" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "react-router-dom" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "react-scripts" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "tw-elements" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined
+
+ - [Line 1] undefined (Severity: undefined)
+   Defect: Dependency "web-vitals" is listed in package.json but not used in the codebase. Consider removing it.
+   Solution: undefined

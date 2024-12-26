@@ -1,394 +1,528 @@
+const fs = require("fs");
+const path = require("path");
+
 module.exports = [
-  {
-    name: "Long Function",
-    severity: "High",
-    check: (lines) => {
-      if (!Array.isArray(lines)) {
-        throw new TypeError(
-          `Expected lines to be an array, but got ${typeof lines}`
-        );
-      }
+  //   // lenghty lines
 
-      // Filter out empty or whitespace-only lines
-      const meaningfulLines = lines.filter((line) => line.trim() !== "");
+  //   {
+  //     // Name of the code smell
+  //     name: "Lengthy Lines",
 
-      // Return an issue if the number of meaningful lines exceeds the threshold
-      const maxLines = 50;
-      return meaningfulLines.length > maxLines
-        ? [{ line: 1, description: `Function exceeds ${maxLines} lines.` }]
-        : [];
-    },
-    fix: "Refactor the function into smaller, reusable functions.",
-  },
+  //     // Severity level for this code smell
+  //     severity: "High",
+
+  //     // Function to check for lines exceeding character limits
+  //     check: (lines) => {
+  //       const MAX_LENGTH = 100; // Maximum character limit for a line
+  //       const WARNING_THRESHOLD = 80; // Warning threshold for character limit
+  //       const issues = []; // Array to store detected issues
+
+  //       const tailwindRegex = /class(Name)?=\{?\`[^`]*\`|\{[^}]*\}|"[^"]*"/; // Regex to detect tailwind class attributes
+  //       const jsxTagRegex = /<Route\s[^>]*>/;
+  //       const commentRegex =
+  //         /^\s*(\/\/.*|\/\*[\s\S]*?\*\/|\{\/\*[\s\S]*?\*\/\})\s*$/; // Single-line and block comments
+  //       // Iterate through each line of code
+  //       lines.forEach((line, idx) => {
+  //         const length = line.length; // Calculate the length of the line
+
+  //         // Skip lines containing Tailwind CSS class definitions
+  //         if (
+  //           tailwindRegex.test(line) ||
+  //           jsxTagRegex.test(line) ||
+  //           commentRegex.test(line)
+  //         ) {
+  //           return;
+  //         }
+
+  //         // If line length exceeds the maximum allowed length, report an issue
+  //         if (length > MAX_LENGTH) {
+  //           issues.push({
+  //             line: idx + 1, // Line number (1-based index)
+  //             description:
+  //               `Line exceeds ${MAX_LENGTH} characters (${length} characters).` +
+  //               " Consider breaking it into multiple lines for better readability.",
+  //           });
+  //         }
+  //         // If line length exceeds the warning threshold, provide a warning
+  //         else if (length > WARNING_THRESHOLD) {
+  //           issues.push({
+  //             line: idx + 1, // Line number (1-based index)
+  //             description: `Line exceeds ${WARNING_THRESHOLD} characters (${length} characters). This is a warning; consider shortening it.`,
+  //           });
+  //         }
+  //       });
+
+  //       return issues; // Return the array of detected issues
+  //     },
+
+  //     // Suggested fix for the code smell
+  //     fix: "Break lengthy lines into multiple shorter lines or refactor the code for better readability.",
+  //   },
+
+  //   //   Long Parameter List
+
+  //   {
+  //     // Name of the code smell
+  //     name: "Long Parameter List",
+
+  //     // Severity level for this code smell
+  //     severity: "Medium",
+
+  //     // Function to check for functions with long parameter lists
+  //     check: (lines) => {
+  //       const issues = []; // Array to store detected issues
+
+  //       // Regex to detect function declarations and arrow functions
+  //       const functionRegex = /function\s+\w*\s*\(([^)]*)\)|\(([^)]*)\)\s*=>/;
+
+  //       // Iterate through each line of code
+  //       lines.forEach((line, idx) => {
+  //         const match = line.match(functionRegex);
+
+  //         if (match) {
+  //           // Extract the parameter list
+  //           const params = (match[1] || match[2] || "")
+  //             .split(",")
+  //             .map((param) => param.trim());
+
+  //           // Check if the number of parameters exceeds 2
+  //           if (params.length > 2) {
+  //             issues.push({
+  //               line: idx + 1, // Line number (1-based index)
+  //               description:
+  //                 `Function has ${params.length} parameters, which exceeds the recommended limit of 2.` +
+  //                 " Consider refactoring the function to use a single configuration object or simplifying the function's responsibilities.",
+  //             });
+  //           }
+  //         }
+  //       });
+
+  //       return issues; // Return the array of detected issues
+  //     },
+
+  //     // Suggested fix for the code smell
+  //     fix: "Refactor the function to use a single configuration object for its parameters or split it into smaller, more specific functions.",
+  //   },
+
+  //   //   Nested Callbacks (Callback Hell)
+
+  //   {
+  //     name: "Nested Callbacks (Callback Hell)",
+  //     severity: "High",
+  //     check: (lines) => {
+  //       const babelParser = require("@babel/parser");
+  //       const issues = []; // Array to store detected issues
+
+  //       const maxAllowedDepth = 3; // Set the threshold for maximum depth
+  //       const content = lines.join("\n");
+  //       let ast;
+
+  //       try {
+  //         // Parse the content to Abstract Syntax Tree (AST) using Babel parser
+  //         ast = babelParser.parse(content, {
+  //           sourceType: "module", // Handle ES modules
+  //           plugins: [
+  //             "jsx", // Enable JSX parsing
+  //             "typescript", // Support TypeScript if needed
+  //             "decorators-legacy", // Support legacy decorators
+  //             "classProperties", // Support class properties
+  //             "optionalChaining", // Support optional chaining
+  //             "nullishCoalescingOperator", // Support nullish coalescing
+  //           ],
+  //         });
+  //       } catch (err) {
+  //         console.error("Error parsing file:", err.message);
+  //         return [];
+  //       }
+
+  //       // Recursive function to traverse AST and check function depth
+  //       function detectNestedClosures(
+  //         node,
+  //         depth = 0,
+  //         reportedLines = new Set()
+  //       ) {
+  //         // Check if the current node is a function
+  //         if (
+  //           node.type === "FunctionDeclaration" ||
+  //           node.type === "FunctionExpression" ||
+  //           node.type === "ArrowFunctionExpression"
+  //         ) {
+  //           depth++; // Increment depth on finding a function
+  //           console.log(
+  //             `Function found at depth ${depth}, line ${node.loc?.start.line}`
+  //           );
+  //         }
+
+  //         // If depth exceeds the threshold, report the issue
+  //         if (depth > maxAllowedDepth) {
+  //           const line = node.loc ? node.loc.start.line : 0; // Use location if available
+
+  //           // Only add the issue if the line hasn't been reported yet
+  //           if (!reportedLines.has(line)) {
+  //             reportedLines.add(line); // Mark the line as reported
+  //             issues.push({
+  //               line,
+  //               description: `Function nesting exceeds the maximum allowed depth of ${maxAllowedDepth}. Current depth: ${depth}.`,
+  //             });
+  //           }
+  //         }
+
+  //         // Explicitly handle CallExpression nodes to traverse arguments
+  //         if (node.type === "CallExpression" && node.arguments) {
+  //           node.arguments.forEach((arg) => {
+  //             if (
+  //               arg.type === "FunctionExpression" ||
+  //               arg.type === "ArrowFunctionExpression"
+  //             ) {
+  //               detectNestedClosures(arg, depth, reportedLines); // Pass reportedLines to avoid duplicates
+  //             }
+  //           });
+  //         }
+
+  //         // Traverse child nodes recursively
+  //         if (node.body && Array.isArray(node.body)) {
+  //           node.body.forEach((childNode) =>
+  //             detectNestedClosures(childNode, depth, reportedLines)
+  //           );
+  //         } else if (typeof node.body === "object") {
+  //           detectNestedClosures(node.body, depth, reportedLines);
+  //         }
+
+  //         // Traverse additional keys in the node
+  //         for (let key in node) {
+  //           if (
+  //             key !== "body" &&
+  //             key !== "arguments" &&
+  //             node[key] &&
+  //             typeof node[key] === "object" &&
+  //             node[key].type
+  //           ) {
+  //             detectNestedClosures(node[key], depth, reportedLines);
+  //           }
+  //         }
+  //       }
+
+  //       // Start traversing from the root AST node
+  //       detectNestedClosures(ast.program);
+
+  //       return issues; // Return detected issues
+  //     },
+
+  //     fix: "Refactor the code to reduce the nesting depth of functions. Consider breaking down the logic into separate functions or using alternatives like Promises or async/await.",
+  //   },
+
+  //   //   Variable Re-Assign
+
+  //   {
+  //     name: "Variable Re-Assign",
+  //     severity: "Medium",
+  //     check: (lines) => {
+  //       const issues = []; // Array to store detected issues
+  //       const variableDeclarations = {}; // Store variable names and their types
+
+  //       // Regex patterns
+  //       const declarationPattern = /^(let|const|var)\s+(\w+)\s*=\s*(.*)$/; // Detect variable declarations
+  //       const assignmentPattern = /(\w+)\s*=\s*(.*)$/; // Detect re-assignments
+
+  //       // Iterate through each line of code
+  //       lines.forEach((line, idx) => {
+  //         const trimmedLine = line.trim();
+
+  //         // Check for variable declarations
+  //         const declarationMatch = trimmedLine.match(declarationPattern);
+  //         if (declarationMatch) {
+  //           const [, keyword, varName, value] = declarationMatch;
+  //           let type;
+  //           try {
+  //             type = typeof eval(value); // Determine type of initial value safely
+  //           } catch (error) {
+  //             type = "unknown"; // If eval fails, mark type as unknown
+  //           }
+
+  //           // Store the variable with its type if not already declared
+  //           if (!variableDeclarations[varName]) {
+  //             variableDeclarations[varName] = {
+  //               type: type,
+  //               declaredAt: idx + 1, // Line number of declaration
+  //             };
+  //           }
+  //         }
+
+  //         // Check for variable re-assignments
+  //         const assignmentMatch = trimmedLine.match(assignmentPattern);
+  //         if (assignmentMatch) {
+  //           const [, varName, value] = assignmentMatch;
+
+  //           // Check if the variable was previously declared
+  //           if (variableDeclarations[varName]) {
+  //             const declaredType = variableDeclarations[varName].type;
+  //             let newType;
+  //             try {
+  //               newType = typeof eval(value); // Determine type of reassigned value safely
+  //             } catch (error) {
+  //               newType = "unknown"; // If eval fails, mark type as unknown
+  //             }
+
+  //             // Flag if the type of value has changed
+  //             if (declaredType !== newType) {
+  //               issues.push({
+  //                 line: idx + 1, // Line number (1-based index)
+  //                 description: `Variable "${varName}" was declared as "${declaredType}" but reassigned to "${newType}". Consider using a new variable for better readability.`,
+  //               });
+  //             }
+  //           }
+  //         }
+  //       });
+
+  //       return issues; // Return the array of detected issues
+  //     },
+  //     fix: "Avoid reassigning variables with a different type. Use descriptive and unique variable names for each purpose to improve code readability and maintainability.",
+  //   },
+
+  // Duplicate Code
+
+  //   {
+  //     name: "Duplicate Code",
+  //     severity: "High",
+  //     check: (lines) => {
+  //       const babelParser = require("@babel/parser");
+  //       const traverse = require("@babel/traverse").default;
+  //       const generate = require("@babel/generator").default;
+  //       const issues = [];
+  //       const content = lines.join("\n");
+
+  //       // Minimum length of code to consider for duplication
+  //       const MIN_DUPLICATE_LENGTH = 5;
+  //       // Minimum similarity threshold (0-1)
+  //       const SIMILARITY_THRESHOLD = 0.8;
+
+  //       let ast;
+  //       try {
+  //         ast = babelParser.parse(content, {
+  //           sourceType: "module",
+  //           plugins: [
+  //             "jsx",
+  //             "typescript",
+  //             "decorators-legacy",
+  //             "classProperties",
+  //             "optionalChaining",
+  //             "nullishCoalescingOperator",
+  //           ],
+  //         });
+  //       } catch (err) {
+  //         console.error("Error parsing file:", err.message);
+  //         return [];
+  //       }
+
+  //       // Store code blocks with their locations and content
+  //       const codeBlocks = new Map();
+
+  //       // Function to calculate similarity between two strings and return similar parts
+  //       function analyzeSimilarity(str1, str2) {
+  //         if (str1 === str2) return { similarity: 1.0, matches: [[str1, str2]] };
+  //         if (str1.length < MIN_DUPLICATE_LENGTH || str2.length < MIN_DUPLICATE_LENGTH) {
+  //           return { similarity: 0.0, matches: [] };
+  //         }
+
+  //         // Split into lines for detailed comparison
+  //         const lines1 = str1.split('\n');
+  //         const lines2 = str2.split('\n');
+  //         const matches = [];
+
+  //         // Find matching line sequences
+  //         let currentMatch = [];
+  //         for (let i = 0; i < lines1.length; i++) {
+  //           for (let j = 0; j < lines2.length; j++) {
+  //             if (lines1[i].trim() === lines2[j].trim()) {
+  //               currentMatch.push([i + 1, j + 1, lines1[i].trim()]);
+  //             } else if (currentMatch.length > 0) {
+  //               if (currentMatch.length >= 2) { // Only store matches of 2 or more lines
+  //                 matches.push([...currentMatch]);
+  //               }
+  //               currentMatch = [];
+  //             }
+  //           }
+  //         }
+
+  //         // Calculate overall similarity using Levenshtein distance
+  //         const longer = str1.length > str2.length ? str1 : str2;
+  //         const shorter = str1.length > str2.length ? str2 : str1;
+  //         const longerLength = longer.length;
+  //         const distance = levenshteinDistance(longer, shorter);
+  //         const similarity = (longerLength - distance) / longerLength;
+
+  //         return { similarity, matches };
+  //       }
+
+  //       // Levenshtein distance implementation
+  //       function levenshteinDistance(str1, str2) {
+  //         const matrix = Array(str2.length + 1).fill(null)
+  //           .map(() => Array(str1.length + 1).fill(null));
+
+  //         for (let i = 0; i <= str1.length; i++) matrix[0][i] = i;
+  //         for (let j = 0; j <= str2.length; j++) matrix[j][0] = j;
+
+  //         for (let j = 1; j <= str2.length; j++) {
+  //           for (let i = 1; i <= str1.length; i++) {
+  //             const indicator = str1[i - 1] === str2[j - 1] ? 0 : 1;
+  //             matrix[j][i] = Math.min(
+  //               matrix[j][i - 1] + 1,
+  //               matrix[j - 1][i] + 1,
+  //               matrix[j - 1][i - 1] + indicator
+  //             );
+  //           }
+  //         }
+  //         return matrix[str2.length][str1.length];
+  //       }
+
+  //       // Traverse the AST to collect code blocks
+  //       traverse(ast, {
+  //         enter(path) {
+  //           if (
+  //             path.node.type === "FunctionDeclaration" ||
+  //             path.node.type === "ClassMethod" ||
+  //             path.node.type === "ArrowFunctionExpression"
+  //           ) {
+  //             const { code } = generate(path.node);
+  //             if (code.length >= MIN_DUPLICATE_LENGTH) {
+  //               const location = path.node.loc?.start.line || 0;
+  //               codeBlocks.set(location, {
+  //                 code,
+  //                 type: path.node.type,
+  //                 name: path.node.id?.name || 'anonymous'
+  //               });
+  //             }
+  //           }
+  //         }
+  //       });
+
+  //       // Compare code blocks for similarity
+  //       const processedPairs = new Set();
+
+  //       codeBlocks.forEach((block1, loc1) => {
+  //         codeBlocks.forEach((block2, loc2) => {
+  //           if (loc1 !== loc2) {
+  //             const pairKey = [loc1, loc2].sort().join('-');
+  //             if (!processedPairs.has(pairKey)) {
+  //               processedPairs.add(pairKey);
+
+  //               const analysis = analyzeSimilarity(block1.code, block2.code);
+  //               if (analysis.similarity >= SIMILARITY_THRESHOLD) {
+  //                 // Create detailed line mapping information
+  //                 const lineMapping = analysis.matches.map(match => {
+  //                   return {
+  //                     block1Lines: match.map(m => m[0]),
+  //                     block2Lines: match.map(m => m[1]),
+  //                     code: match.map(m => m[2])
+  //                   };
+  //                 });
+
+  //                 issues.push({
+  //                   line: Math.min(loc1, loc2),
+  //                   description: `Duplicate code detected with ${Math.round(analysis.similarity * 100)}% similarity.`,
+  //                   details: {
+  //                     block1: {
+  //                       startLine: loc1,
+  //                       type: block1.type,
+  //                       name: block1.name
+  //                     },
+  //                     block2: {
+  //                       startLine: loc2,
+  //                       type: block2.type,
+  //                       name: block2.name
+  //                     },
+  //                     similarLines: lineMapping,
+  //                     message: `Found ${lineMapping.length} similar code segments:\n` +
+  //                       lineMapping.map(mapping =>
+  //                         `- Lines ${mapping.block1Lines.join(',')} match lines ${mapping.block2Lines.join(',')}:\n  ${mapping.code.join('\n  ')}`
+  //                       ).join('\n')
+  //                   }
+  //                 });
+  //               }
+  //             }
+  //           }
+  //         });
+  //       });
+
+  //       return issues;
+  //     },
+  //     fix: "Consider extracting the duplicated code into a reusable function or component. If the duplicated code has slight variations, parameterize the differences. For class-based duplications, consider using inheritance or composition patterns.",
+  //   },
+
+  // unused dependency
+
+
   {
-    name: "Magic Numbers",
+    name: "Unused Dependency",
     severity: "Medium",
-    check: (lines) => {
-      const magicNumberRegex = /\b\d+(\.\d+)?\b/; // Matches numeric literals
-      const allowedNumbers = new Set(["0", "1", "-1"]); // Allowed numbers that are not considered magic
-
-      return lines
-        .map((line, idx) => {
-          // Skip numeric literals inside string contexts
-          const cleanedLine = line
-            .replace(/(["'`])(?:(?=(\\?))\2.)*?\1/g, "") // Remove string literals
-            .replace(/\/\/.*|\/\*[\s\S]*?\*\//g, ""); // Remove comments
-
-          const matches = cleanedLine.match(new RegExp(magicNumberRegex, "g")); // Find all numeric literals outside strings
-          if (matches) {
-            const issues = matches
-              .filter((num) => {
-                // Ensure valid numeric literal
-                return (
-                  num.trim() !== "" &&
-                  !allowedNumbers.has(num) &&
-                  !/\b(const|let|var)\b/.test(line) // Exclude allowed and declared constants
-                );
-              })
-              .map((num) => ({
-                line: idx + 1,
-                description: `Magic number '${num}' found. Consider replacing it with a named constant.`,
-              }));
-
-            return issues.length > 0 ? issues : null;
+    check: (lines, filePath, projectRoot) => {
+      const issues = [];
+      const packageJsonPath = path.join(projectRoot, "package.json");
+  
+      // Check if package.json exists
+      if (!fs.existsSync(packageJsonPath)) {
+        issues.push({
+          line: 0,
+          description: "Warning: package.json not found in the target project. Unable to analyze unused dependencies.",
+        });
+        return issues;
+      }
+  
+      let packageJson;
+      try {
+        packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
+      } catch (err) {
+        console.error("Error reading package.json:", err.message);
+        return issues;
+      }
+  
+      const { dependencies = {}, devDependencies = {} } = packageJson;
+      const allDependencies = Object.keys(dependencies);
+      const allDevDependencies = Object.keys(devDependencies);
+      const allUsedDependencies = new Set();
+  
+      // Traverse the source files and collect imported/required modules
+      const collectImports = (lines) => {
+        const importRegex = /import\\s+.*\\s+from\\s+['\"](.*)['\"]/g;
+        const requireRegex = /require\\(['\"](.*)['\"]\\)/g;
+  
+        lines.forEach((line) => {
+          let match;
+          while ((match = importRegex.exec(line)) !== null) {
+            allUsedDependencies.add(match[1]);
           }
-          return null;
-        })
-        .flat()
-        .filter(Boolean); // Remove null or empty entries
-    },
-    fix: "Replace magic numbers with named constants for better clarity.",
-  },
-  {
-    name: "Hardcoded Strings",
-    severity: "Medium",
-    check: (lines) => {
-      const hardcodedStrings = [];
-  
-      lines.forEach((line, idx) => {
-        // Regular expression to match hardcoded strings
-        const regex = /(["'])(?:(?=(\\?))\2.)*?\1/;
-  
-        // Exclusions:
-        if (
-          regex.test(line) && // Match quoted strings
-          !/(import|require|console|path)/.test(line) && // Exclude imports or requires
-          !/^\s*[\w.]+\s*:\s*["'].*["']/.test(line) && // Exclude object properties (`key: "value"`)
-          !/<[\w\s.]+=["'].*["']/.test(line) && // Exclude JSX attributes (`<Component prop="value" />`)
-          !/\b(className|src|alt|href|id|type|title|name|role|placeholder|data-aos|to|value)\s*=\s*["'].*["']/.test(line) && // Exclude common JSX attributes
-          !/const\s+\w+\s*=\s*["'].*["'];?/.test(line) // Exclude simple variable definitions
-        ) {
-          hardcodedStrings.push({
-            line: idx + 1,
-            description: line.trim(),
-          });
-        }
-      });
-  
-      return hardcodedStrings;
-    },
-    fix: "Replace hardcoded strings with variables, constants or configuration.",
-  },
-  {
-    name: "Unused Variables",
-    severity: "Low",
-    check: (lines) => {
-      const unusedVariables = [];
-  
-      // Join lines to analyze the full file
-      const fullCode = lines.join("\n");
-  
-      lines.forEach((line, idx) => {
-        // Match variable declarations (let, const) and capture variable names
-        const match = line.match(/\b(let|const)\s+(\w+)\s*(=[^;]*)?;/);
-  
-        if (match) {
-          const variableName = match[2];
-  
-          // Check if the variable is unused in the rest of the file
-          const usageRegex = new RegExp(`\\b${variableName}\\b`, "g");
-          const occurrences = [...fullCode.matchAll(usageRegex)];
-  
-          // If only one occurrence (the declaration), it is unused
-          if (occurrences.length === 1) {
-            unusedVariables.push({
-              line: idx + 1,
-              description: line.trim(),
-            });
+          while ((match = requireRegex.exec(line)) !== null) {
+            allUsedDependencies.add(match[1]);
           }
-        }
-      });
-  
-      return unusedVariables;
-    },
-    fix: "Remove or use declared variables to avoid unnecessary clutter.",
-  }
-  ,
-  {
-    name: "Nested Loops",
-    severity: "High",
-    check: (lines) => {
-      const matches = [];
-  
-      // Stack to track indentation levels
-      let loopStack = [];
-  
-      lines.forEach((line, idx) => {
-        // Check if the line contains a loop (for, while)
-        const loopMatch = /^(for|while)\s/.test(line.trim());
-  
-        if (loopMatch) {
-          // Check the indentation of the loop to track nesting
-          const indentationLevel = line.search(/\S|$/); // Find the first non-whitespace character
-  
-          if (loopStack.length > 0 && indentationLevel > loopStack[loopStack.length - 1]) {
-            // If a loop is nested within another loop, it's a nested loop
-            matches.push({ line: idx + 1, description: line.trim() });
-          }
-  
-          // Push the current indentation level to the stack
-          loopStack.push(indentationLevel);
-        } else {
-          // If the line does not contain a loop, reset the indentation stack
-          loopStack = loopStack.filter((level, i) => i < loopStack.length - 1);
-        }
-      });
-  
-      return matches;
-    },
-    fix: "Avoid deeply nested loops; use functions or data transformations.",
-  },
-  {
-    name: "Console Logs in Production",
-    severity: "Medium",
-    check: (lines) =>
-      lines
-        .map((line, idx) =>
-          /console\.log/.test(line)
-            ? { line: idx + 1, description: line.trim() }
-            : null
-        )
-        .filter(Boolean),
-    fix: "Remove `console.log` or use a proper logging library.",
-  },
-  {
-    name: "Long Parameter List",
-    severity: "Medium",
-    check: (lines) =>
-      lines
-        .map((line, idx) =>
-          /\w+\(.*,.+,.+,.+\)/.test(line)
-            ? { line: idx + 1, description: line.trim() }
-            : null
-        )
-        .filter(Boolean),
-    fix: "Group related parameters into objects or use fewer parameters.",
-  },
-  {
-    name: "Comments Overuse",
-    severity: "Low",
-    check: (lines) => {
-      const commentRegex = /\/\/|\/\*/; // Compile regex once
-      const results = [];
-      for (let i = 0; i < lines.length && results.length < 10; i++) {
-        const trimmedLine = lines[i].trim();
-        if (commentRegex.test(trimmedLine)) {
-          results.push({ line: i + 1, description: trimmedLine });
-        }
-      }
-      return results;
-    },
-    fix: "Avoid over-commenting. Let clean code and function names describe functionality.",
-  },
-  {
-    name: "God Class",
-    severity: "High",
-    maxLines: 300, // Configurable threshold
-    check: (lines) => {
-      if (lines.length > this.maxLines) {
-        return [
-          {
-            line: 1,
-            description: `Class has ${lines.length} lines, exceeding the limit of ${this.maxLines}.`,
-          },
-        ];
-      }
-      return [];
-    },
-    fix: "Split the class into smaller, more cohesive classes.",
-  },
-  {
-    name: "Improper Error Handling",
-    severity: "Medium",
-    check: (lines) => {
-      const improperCatchRegex = /catch\s*\(.*\)\s*{(\s*})?/; // Regex for empty or improper catch blocks
-      const results = [];
-  
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (improperCatchRegex.test(line)) {
-          results.push({
-            line: i + 1,
-            description: `Empty or improper catch block detected: "${line}".`,
-          });
-        }
-      }
-  
-      return results;
-    },
-    fix: "Add meaningful error handling logic inside catch blocks, such as fallback mechanisms, detailed error logging, or rethrowing exceptions with context.",
-  },
-      
-  {
-    name: "Global Variables",
-    severity: "High",
-    check: (lines) => {
-      const globalVarRegex = /^\s*var\s+\w+/; // Regex for global `var` declarations at the start of lines
-      const results = [];
-  
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (globalVarRegex.test(line)) {
-          results.push({
-            line: i + 1,
-            description: `Potential global variable detected: "${line}".`,
-          });
-        }
-      }
-  
-      return results;
-    },
-    fix: "Avoid using global variables. Use block-scoped declarations (`let` or `const`), or encapsulate variables in modules or functions.",
-  },
-  {
-    name: "Large File",
-    severity: "High",
-    maxLines: 500, // Configurable threshold
-    check: (lines) => {
-      const fileLength = lines.length;
-      if (fileLength > this.maxLines) {
-        return [
-          {
-            line: 1,
-            description: `File has ${fileLength} lines, exceeding the limit of ${this.maxLines}. Consider splitting it into smaller, logically grouped files.`,
-          },
-        ];
-      }
-      return [];
-    },
-    fix: "Split the file into smaller files based on logical groupings, such as separating modules, components, or functions.",
-  },
-  {
-    name: "Too Many Imports",
-    severity: "Medium",
-    maxImports: 20, // Configurable threshold
-    check: (lines) => {
-      const importRegex = /^\s*import/; // Match lines starting with "import"
-      let importCount = 0;
-  
-      for (let i = 0; i < lines.length; i++) {
-        if (importRegex.test(lines[i])) {
-          importCount++;
-          if (importCount > this.maxImports) {
-            return [
-              {
-                line: 1,
-                description: `Too many imports (${importCount}) in the file, exceeding the limit of ${this.maxImports}. Consider reducing dependencies or reorganizing imports.`,
-              },
-            ];
-          }
-        }
-      }
-  
-      return [];
-    },
-    fix: "Reduce the number of imports by reusing modules, reorganizing dependencies, or using index files for grouped exports.",
-  },
-  {
-    name: "Inconsistent Naming Conventions",
-    severity: "Medium",
-    conventions: {
-      variable: /^[a-z][a-zA-Z0-9]*$/, // camelCase
-      constant: /^[A-Z_]+$/,          // SCREAMING_SNAKE_CASE
-      function: /^[a-z][a-zA-Z0-9]*$/, // camelCase
-    },
-    check: function (lines) {
-      const defaultConventions = {
-        variable: /^[a-z][a-zA-Z0-9]*$/,
-        constant: /^[A-Z_]+$/,
-        function: /^[a-z][a-zA-Z0-9]*$/,
+        });
       };
-      const conventions = this.conventions || defaultConventions;
   
-      const results = [];
-      const { variable, constant, function: functionConvention } = conventions;
+      collectImports(lines);
   
-      lines.forEach((line, idx) => {
-        const trimmed = line.trim();
-  
-        if (/const\s+([a-zA-Z_][\w]*)\s*=/.test(trimmed)) {
-          const [, name] = trimmed.match(/const\s+([a-zA-Z_][\w]*)\s*=/) || [];
-          if (name && !constant.test(name)) {
-            results.push({
-              line: idx + 1,
-              description: `Constant "${name}" does not follow SCREAMING_SNAKE_CASE.`,
-            });
-          }
-        } else if (/let\s+([a-zA-Z_][\w]*)\s*=/.test(trimmed) || /var\s+([a-zA-Z_][\w]*)\s*=/.test(trimmed)) {
-          const [, name] = trimmed.match(/(let|var)\s+([a-zA-Z_][\w]*)\s*=/) || [];
-          if (name && !variable.test(name)) {
-            results.push({
-              line: idx + 1,
-              description: `Variable "${name}" does not follow camelCase.`,
-            });
-          }
-        } else if (/function\s+([a-zA-Z_][\w]*)\s*\(/.test(trimmed)) {
-          const [, name] = trimmed.match(/function\s+([a-zA-Z_][\w]*)\s*\(/) || [];
-          if (name && !functionConvention.test(name)) {
-            results.push({
-              line: idx + 1,
-              description: `Function "${name}" does not follow camelCase.`,
-            });
-          }
-        }
+      // Find unused dependencies
+      const unusedDependencies = allDependencies.filter(
+        (dep) => !allUsedDependencies.has(dep)
+      );
+      unusedDependencies.forEach((dep) => {
+        issues.push({
+          line: 1, // Reporting for the project, not specific to a line in source files
+          description: `Dependency "${dep}" is listed in package.json but not used in the codebase. Consider removing it.`,
+        });
       });
   
-      return results;
+      // Validate devDependencies
+      const miscategorizedDevDependencies = allDevDependencies.filter(
+        (devDep) => allUsedDependencies.has(devDep)
+      );
+      miscategorizedDevDependencies.forEach((devDep) => {
+        issues.push({
+          line: 1,
+          description: `Dependency "${devDep}" is used in the codebase but is listed under devDependencies. Consider moving it to dependencies.`,
+        });
+      });
+  
+      return issues;
     },
-    fix: "Ensure consistent naming conventions based on the project standards, such as camelCase for variables, SCREAMING_SNAKE_CASE for constants, and camelCase for functions.",
+    fix: "Remove unused dependencies from package.json. Ensure that dependencies used only during development are listed under devDependencies, and runtime dependencies are listed under dependencies.",
   },
-  {
-    name: "Duplicate Code",
-    severity: "High",
-    minOccurrences: 3, // Configurable threshold
-    check: (lines) => {
-      const duplicates = {};
-      const results = [];
-  
-      // Identify duplicates
-      lines.forEach((line, idx) => {
-        const trimmed = line.trim();
-        if (trimmed) {
-          if (!duplicates[trimmed]) {
-            duplicates[trimmed] = { count: 0, lines: [] };
-          }
-          duplicates[trimmed].count++;
-          duplicates[trimmed].lines.push(idx + 1);
-        }
-      });
-  
-      // Filter and format results for lines exceeding the threshold
-      Object.entries(duplicates).forEach(([code, { count, lines }]) => {
-        if (count >= this.minOccurrences) {
-          results.push({
-            line: lines[0], // First occurrence
-            description: `Duplicate code found (${count} times): "${code}". Found on lines: ${lines.join(", ")}.`,
-          });
-        }
-      });
-  
-      return results;
-    },
-    fix: "Extract duplicate code into reusable functions or constants to improve maintainability.",
-  }
 ];

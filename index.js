@@ -1,12 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 const { program } = require("commander");
-const os = require("os");
-const esprima = require("esprima");
+const babelParser = require("@babel/parser");
 
 // List of file extensions to analyze
 const allowedExtensions = [".js", ".jsx", ".ts", ".tsx"];
-const excludePatterns = [/\.config\.js$/i] || [/eslint\.config.*\.js$/i];
+const excludePatterns = [/\.json$/i, /\.html$/i, /\.css$/i, /\.min\.js$/i, /\.config\.js$/i, /eslint\.config.*\.js$/i];
 
 // Severity levels
 const SEVERITY_LEVELS = {
@@ -31,6 +30,7 @@ if (fs.existsSync(customSmellsPath)) {
   );
   codeSmells = require("./smell");
 }
+
 // Recursive function to explore directories
 const exploreFolder = (dirPath, files = [], ignore = []) => {
   let entries;
@@ -54,22 +54,9 @@ const exploreFolder = (dirPath, files = [], ignore = []) => {
         pattern.test(fullPath)
       );
 
-      if (isAllowedExtension) {
-        const matchesExcludePattern = excludePatterns.some((pattern) =>
-          pattern.test(fullPath)
-        );
-      
-        if (matchesExcludePattern) {
-          console.log(`Excluding file: ${fullPath}`); // Debug log
-        } else {
-          files.push(fullPath);
-        }
-      }
-
       if (isAllowedExtension && !matchesExcludePattern) {
         files.push(fullPath);
       }
-      
     }
   });
 
@@ -77,7 +64,7 @@ const exploreFolder = (dirPath, files = [], ignore = []) => {
 };
 
 // Analyze a file for code smells
-const analyzeFile = async (filePath) => {
+const analyzeFile = async (filePath, projectRoot) => {
   let content;
   try {
     content = fs.readFileSync(filePath, "utf-8");
@@ -85,24 +72,56 @@ const analyzeFile = async (filePath) => {
     console.error(`Error reading file ${filePath}:`, err.message);
     return [];
   }
+
+  // Skip empty files
+  if (!content.trim()) {
+    console.warn(`Skipping empty file: ${filePath}`);
+    return [];
+  }
+
   const lines = content.split("\n");
-  const smellsDetected = [];
+  const smellsDetected = new Map();
 
   codeSmells.forEach((smell) => {
-    const occurrences = smell.check(lines);
+    const occurrences = smell.check(lines, filePath, projectRoot); // Pass projectRoot
     occurrences.forEach((occurrence) => {
-      smellsDetected.push({
-        file: filePath,
-        line: occurrence.line,
-        smell: smell.name,
-        description: occurrence.description,
-        fix: smell.fix,
-        severity: smell.severity,
-      });
+      const key = `${filePath}-${occurrence.line}-${smell.name}`;
+      if (!smellsDetected.has(key)) {
+        smellsDetected.set(key, {
+          file: filePath,
+          line: occurrence.line,
+          smell: smell.name,
+          description: occurrence.description,
+          fix: smell.fix,
+          severity: smell.severity,
+        });
+      }
     });
   });
 
-  return smellsDetected;
+  return Array.from(smellsDetected.values());
+};
+
+// Analyze all files in the project
+const analyzeProject = async (files, projectRoot) => {
+  let results = [];
+  for (const file of files) {
+    const fileResults = await analyzeFile(file, projectRoot);
+    results = results.concat(fileResults);
+  }
+
+  // Check for project-level smells (like Unused Dependency)
+  codeSmells.forEach((smell) => {
+    if (smell.name === "Unused Dependency") {
+      const packageJsonPath = path.join(projectRoot, "package.json");
+      if (fs.existsSync(packageJsonPath)) {
+        const occurrences = smell.check([], packageJsonPath, projectRoot); // Pass projectRoot
+        results = results.concat(occurrences);
+      }
+    }
+  });
+
+  return results;
 };
 
 // Analyze files concurrently
@@ -120,12 +139,12 @@ const generateDetailedReport = (results) => {
 
   const report = [];
   for (const [file, issues] of Object.entries(groupedByFile)) {
-    report.push(`FILE: ${file.replace(/\\/g,'/')}\n`);
+    report.push(`FILE: ${file.replace(/\\/g, "/")}`);
     issues.forEach((issue) => {
       report.push(
         ` - [Line ${issue.line}] ${issue.smell} (Severity: ${issue.severity})\n` +
-        `   Defect: ${issue.description}\n` +
-        `   Solution: ${issue.fix}\n`
+          `   Defect: ${issue.description}\n` +
+          `   Solution: ${issue.fix}\n`
       );
     });
   }
@@ -190,14 +209,18 @@ const main = async (inputPath, options) => {
 
   let files = [];
   const stats = fs.statSync(inputPath);
+  let projectRoot = inputPath;
+
   if (stats.isDirectory()) {
     files = exploreFolder(inputPath);
     console.log(`Found ${files.length} files to analyze.`);
+    projectRoot = inputPath; // Use the input directory as the project root
   } else if (
     stats.isFile() &&
     allowedExtensions.includes(path.extname(inputPath))
   ) {
     files = [inputPath];
+    projectRoot = path.dirname(inputPath); // Use the file's directory as the project root
   } else {
     console.error("Unsupported file type.");
     return;
@@ -208,7 +231,7 @@ const main = async (inputPath, options) => {
     return;
   }
 
-  const results = (await analyzeFiles(files)).flat();
+  const results = await analyzeProject(files, projectRoot);
   if (results.length === 0) {
     console.log("No code smells detected!");
     return;
@@ -233,65 +256,10 @@ const main = async (inputPath, options) => {
 
   if (options.output) {
     let outputPath = path.join(process.cwd(), options.output);
-    let formattedOutput = output;
-
-    // Handle formatting if requested
-    if (options.format) {
-      const ext = path.extname(outputPath).toLowerCase();
-      if (![".json", ".csv"].includes(ext)) {
-        console.error("Format flag requires output file to be .json or .csv");
-        return;
-      }
-      formattedOutput = formatOutput(results, ext);
-    }
-
-    fs.writeFileSync(outputPath, formattedOutput);
+    fs.writeFileSync(outputPath, output);
     console.log(`Report saved to ${outputPath}`);
   } else {
     console.log(output);
-  }
-
-  if (options.report) {
-    // Generate summary report
-    const totalSmells = results.length;
-    const fileCount = new Set(results.map((r) => r.file)).size;
-    const averageSmells = (totalSmells / fileCount).toFixed(2);
-
-    console.log("\nSummary Report:");
-    console.log("===============");
-    console.log(`Total Code Smells: ${totalSmells}`);
-    console.log(`Average Defects Per File: ${averageSmells}`);
-    console.log("\nDefects by File:");
-
-    // Group results by file
-    const groupedByFile = results.reduce((acc, r) => {
-      acc[r.file] = acc[r.file] || [];
-      acc[r.file].push(r);
-      return acc;
-    }, {});
-
-    // Print defects count for each file
-    for (const [file, issues] of Object.entries(groupedByFile)) {
-      console.log(`${file}: ${issues.length} defects`);
-    }
-  } else {
-    // Generate detailed report
-    const groupedByFile = results.reduce((acc, r) => {
-      acc[r.file] = acc[r.file] || [];
-      acc[r.file].push(r);
-      return acc;
-    }, {});
-
-    for (const [file, issues] of Object.entries(groupedByFile)) {
-      console.log(`\nFILE: ${file}:`);
-      issues.forEach((issue) => {
-        console.log(
-          ` - [Line ${issue.line}] ${issue.smell} (Severity: ${issue.severity})\n` +
-            `   Defect: ${issue.description}\n` +
-            `   Solution: ${issue.fix}\n`
-        );
-      });
-    }
   }
 };
 
@@ -334,33 +302,6 @@ Examples:
   )
   .parse(process.argv);
 
-const formatOutput = (results, fileExtension) => {
-  if (![".json", ".csv"].includes(fileExtension)) {
-    throw new Error(`Unsupported format: ${fileExtension}. Use .json or .csv.`);
-  }
-  if (fileExtension === ".json") {
-    return JSON.stringify(results, null, 2);
-  } else if (fileExtension === ".csv") {
-    const headers = [
-      "File",
-      "Line",
-      "Smell",
-      "Severity",
-      "Description",
-      "Solution",
-    ];
-    const rows = results.map((r) => [
-      r.file,
-      r.line,
-      r.smell,
-      r.severity,
-      r.description.replace(/,/g, ";"),
-      r.fix.replace(/,/g, ";"),
-    ]);
-    return [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
-  }
-  return results;
-};
 const filePath = program.args[0];
 const options = program.opts();
 
